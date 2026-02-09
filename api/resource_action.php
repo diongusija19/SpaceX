@@ -29,17 +29,25 @@ if ($action === 'delete' && !is_admin()) {
   json_response(['error' => 'Forbidden'], 403);
 }
 
+// For delete, log first to avoid FK errors after deletion
+if ($action === 'delete') {
+  $log = $conn->prepare("INSERT INTO activity_log (user_id, action, resource_id) VALUES (?, ?, ?)");
+  $log->bind_param("isi", $_SESSION['user_id'], $action, $id);
+  $log->execute();
+  $log->close();
+
+  $stmt = $conn->prepare("DELETE FROM resources WHERE id=?");
+  $stmt->bind_param("i", $id);
+  $stmt->execute();
+  $stmt->close();
+
+  json_response(['ok' => true]);
+}
+
 if ($action === 'start' || $action === 'stop') {
   $status = $action === 'start' ? 'running' : 'stopped';
   $stmt = $conn->prepare("UPDATE resources SET status=? WHERE id=?");
   $stmt->bind_param("si", $status, $id);
-  $stmt->execute();
-  $stmt->close();
-}
-
-if ($action === 'delete') {
-  $stmt = $conn->prepare("DELETE FROM resources WHERE id=?");
-  $stmt->bind_param("i", $id);
   $stmt->execute();
   $stmt->close();
 }
