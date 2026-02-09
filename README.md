@@ -33,7 +33,43 @@ Build a working web app prototype that allows users to manage simulated cloud re
 4. **Final demo & code review**: walkthrough + documentation
 
 ## How to Run (Will be updated)
-Instructions will be added once the backend and frontend are set up.
+### Prerequisites
+- XAMPP (Apache + MySQL)
+- Node.js (LTS) + npm
+
+### 1) Database Setup (phpMyAdmin)
+1. Open phpMyAdmin and create the database:
+   - `spacex_cloud`
+2. Run these SQL files (in order):
+   - `seed.sql` (users + sample data)
+   - `boards.sql` (boards table)
+   - `pipelines.sql` (pipelines tables)
+
+### 2) Backend (PHP API)
+1. Copy the `api/` folder into:
+   - `/Applications/XAMPP/xamppfiles/htdocs/SpaceX/api/`
+2. Copy `.htaccess` into:
+   - `/Applications/XAMPP/xamppfiles/htdocs/SpaceX/.htaccess`
+3. Ensure Apache is running in XAMPP.
+
+### 3) Frontend (Angular)
+1. Install dependencies:
+   - `cd spacex-ui`
+   - `npm install`
+2. Build the app:
+   - `npm run build`
+3. Copy the build output:
+   - `cp -R /Applications/XAMPP/xamppfiles/htdocs/SpaceX/www/browser/. /Applications/XAMPP/xamppfiles/htdocs/SpaceX/`
+4. Open:
+   - `http://localhost/SpaceX/`
+
+### Demo Credentials
+- Admin: `admin@spacex.com` / `admin123`
+- User: `user@spacex.com` / `user123`
+
+### Notes
+- The app is a SPA; routing is handled by `.htaccess`.
+- If you see old assets, hard refresh: `Cmd+Shift+R`.
 
 ## Author
 Joni
