@@ -36,6 +36,8 @@ if ($action === 'delete') {
   $log->execute();
   $log->close();
 
+  create_notification($conn, current_user_id(), "Deleted resource #{$id}.");
+
   $stmt = $conn->prepare("DELETE FROM resources WHERE id=?");
   $stmt->bind_param("i", $id);
   $stmt->execute();
@@ -56,6 +58,8 @@ $log = $conn->prepare("INSERT INTO activity_log (user_id, action, resource_id) V
 $log->bind_param("isi", $_SESSION['user_id'], $action, $id);
 $log->execute();
 $log->close();
+
+create_notification($conn, current_user_id(), ucfirst($action) . " resource #{$id}.");
 
 json_response(['ok' => true]);
 ?>

@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $stmt->insert_id;
     $stmt->close();
 
+    create_notification($conn, $uid, "Created work item: {$title}");
     json_response(['id' => $id]);
   }
 
@@ -65,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
+    create_notification($conn, current_user_id(), "Moved work item #{$id} to {$status}");
     json_response(['ok' => true]);
   }
 
@@ -83,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
+    create_notification($conn, current_user_id(), "Deleted work item #{$id}");
     json_response(['ok' => true]);
   }
 

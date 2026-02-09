@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $stmt->insert_id;
     $stmt->close();
 
+    create_notification($conn, $uid, "Created pipeline: {$name}");
     json_response(['id' => $id]);
   }
 
@@ -105,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
+    create_notification($conn, current_user_id(), "Ran pipeline #{$pipeline_id}");
     json_response(['run_id' => $run_id]);
   }
 

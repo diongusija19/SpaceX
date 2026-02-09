@@ -11,6 +11,7 @@ import { PipelinesPage } from './pages/pipelines.page';
 import { PipelineDetailPage } from './pages/pipeline-detail.page';
 import { ReposPage } from './pages/repos.page';
 import { RepoDetailPage } from './pages/repo-detail.page';
+import { NotificationsPage } from './pages/notifications.page';
 import { ShellLayout } from './layout/shell.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
@@ -29,6 +30,7 @@ export const routes: Routes = [
       { path: 'pipelines/:id', component: PipelineDetailPage },
       { path: 'repos', component: ReposPage },
       { path: 'repos/:id', component: RepoDetailPage },
+      { path: 'notifications', component: NotificationsPage },
       { path: 'resources/:id', component: ResourceDetailPage },
       { path: 'activity', component: ActivityPage },
       { path: 'regions', component: RegionsPage },

@@ -62,3 +62,16 @@ a { color: var(--accent); text-decoration: none; }
 .progress { height:6px; background:#e5e7eb; border-radius:999px; overflow:hidden; }
 .progress > span { display:block; height:100%; background: var(--accent); }
 .empty { padding: 12px 4px; color: var(--muted); font-size: 13px; }
+.notice {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #e0f2fe;
+  color: #075985;
+  display: inline-block;
+  font-size: 13px;
+}
+.notice.error {
+  background: #fee2e2;
+  color: #991b1b;
+}

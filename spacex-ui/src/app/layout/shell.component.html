@@ -32,6 +32,10 @@
         <div class="search-wrap">
           <input class="search" placeholder="Search resources" disabled>
         </div>
+        <a class="notif" routerLink="/notifications">
+          Notifications
+          <span class="badge" *ngIf="unread > 0">{{ unread }}</span>
+        </a>
         <div class="user-pill">
           {{ auth.current?.email || 'Guest' }}
           <span *ngIf="auth.current?.role">• {{ auth.current?.role }}</span>

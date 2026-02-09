@@ -1,0 +1,25 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Notifications</div>
+  <button class="btn secondary" (click)="markAll()">Mark all as read</button>
+</div>
+
+<div class="card">
+  <div class="card-title">Recent</div>
+  <table class="table" style="margin-top:10px;">
+    <tr>
+      <th>Status</th>
+      <th>Message</th>
+      <th>Date</th>
+      <th>Action</th>
+    </tr>
+    <tr *ngFor="let n of items">
+      <td><span class="dot" [class.unread]="n.is_read == 0"></span></td>
+      <td>{{ n.message }}</td>
+      <td>{{ n.created_at }}</td>
+      <td>
+        <button class="btn secondary" (click)="markRead(n)" [disabled]="n.is_read == 1">Mark read</button>
+      </td>
+    </tr>
+    <tr *ngIf="items.length === 0"><td colspan="4">No notifications.</td></tr>
+  </table>
+</div>

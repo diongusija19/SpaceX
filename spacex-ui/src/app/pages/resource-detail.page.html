@@ -1,4 +1,6 @@
 <div *ngIf="detail">
+  <div *ngIf="message" class="notice">{{ message }}</div>
+  <div *ngIf="error" class="notice error">{{ error }}</div>
   <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
     <div class="card">
       <div class="card-title">Status</div>

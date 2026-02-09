@@ -1,0 +1,11 @@
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #d1d5db;
+  display: inline-block;
+}
+
+.dot.unread {
+  background: #0078d4;
+}
