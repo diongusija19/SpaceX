@@ -20,102 +20,152 @@
   </form>
 </div>
 
-<div class="board">
-  <div class="column" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'todo')">
-    <div class="column-title">To Do</div>
-    <div class="card item"
-         *ngFor="let i of byStatus('todo')"
-         draggable="true"
-         (dragstart)="onDragStart($event, i)"
-         (dragend)="onDragEnd()"
-         (dragover)="onDragOver($event)"
-         (drop)="onDrop($event, 'todo')"
-         [class.dragging]="draggingId === i.id">
-      <div class="drag-handle" draggable="true"
-           (dragstart)="onDragStart($event, i)"
-           (dragend)="onDragEnd()">drag</div>
-      <div class="item-title">{{ i.title }}</div>
-      <div class="item-desc">{{ i.description }}</div>
-      <div class="item-meta">
-        <span class="pill {{ i.priority }}">{{ i.priority }}</span>
-        <span class="muted">{{ i.assignee || 'unassigned' }}</span>
-      </div>
-      <div class="item-tags" *ngIf="i.tags">
-        <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
-      </div>
-      <div class="item-meta">
-        <span class="muted">Due: {{ i.due_date || '—' }}</span>
-        <span class="muted">{{ i.created_at }}</span>
-      </div>
-      <div class="item-actions">
-        <button class="btn secondary" (click)="move(i, 'doing')">Move →</button>
-        <button class="btn ghost" (click)="remove(i)">Delete</button>
-      </div>
-    </div>
-  </div>
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Swimlane Filters</div>
+  <div class="filters">
+    <label>Assignee</label>
+    <select class="input" [(ngModel)]="filterAssignee" name="filterAssignee" aria-label="Filter by assignee">
+      <option value="all">All</option>
+      <option *ngFor="let a of uniqueAssignees()" [value]="a">{{ a }}</option>
+      <option value="Unassigned">Unassigned</option>
+    </select>
 
-  <div class="column" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'doing')">
-    <div class="column-title">Doing</div>
-    <div class="card item"
-         *ngFor="let i of byStatus('doing')"
-         draggable="true"
-         (dragstart)="onDragStart($event, i)"
-         (dragend)="onDragEnd()"
-         (dragover)="onDragOver($event)"
-         (drop)="onDrop($event, 'doing')"
-         [class.dragging]="draggingId === i.id">
-      <div class="drag-handle" draggable="true"
-           (dragstart)="onDragStart($event, i)"
-           (dragend)="onDragEnd()">drag</div>
-      <div class="item-title">{{ i.title }}</div>
-      <div class="item-desc">{{ i.description }}</div>
-      <div class="item-meta">
-        <span class="pill {{ i.priority }}">{{ i.priority }}</span>
-        <span class="muted">{{ i.assignee || 'unassigned' }}</span>
-      </div>
-      <div class="item-tags" *ngIf="i.tags">
-        <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
-      </div>
-      <div class="item-meta">
-        <span class="muted">Due: {{ i.due_date || '—' }}</span>
-        <span class="muted">{{ i.created_at }}</span>
-      </div>
-      <div class="item-actions">
-        <button class="btn secondary" (click)="move(i, 'todo')">← Back</button>
-        <button class="btn secondary" (click)="move(i, 'done')">Move →</button>
-      </div>
-    </div>
-  </div>
+    <label>Tag</label>
+    <select class="input" [(ngModel)]="filterTag" name="filterTag" aria-label="Filter by tag">
+      <option value="all">All</option>
+      <option *ngFor="let t of uniqueTags()" [value]="t">{{ t }}</option>
+    </select>
 
-  <div class="column" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'done')">
-    <div class="column-title">Done</div>
-    <div class="card item"
-         *ngFor="let i of byStatus('done')"
-         draggable="true"
-         (dragstart)="onDragStart($event, i)"
-         (dragend)="onDragEnd()"
-         (dragover)="onDragOver($event)"
-         (drop)="onDrop($event, 'done')"
-         [class.dragging]="draggingId === i.id">
-      <div class="drag-handle" draggable="true"
-           (dragstart)="onDragStart($event, i)"
-           (dragend)="onDragEnd()">drag</div>
-      <div class="item-title">{{ i.title }}</div>
-      <div class="item-desc">{{ i.description }}</div>
-      <div class="item-meta">
-        <span class="pill {{ i.priority }}">{{ i.priority }}</span>
-        <span class="muted">{{ i.assignee || 'unassigned' }}</span>
+    <label class="toggle">
+      <input type="checkbox" [(ngModel)]="filterOverdue" name="filterOverdue">
+      Overdue only
+    </label>
+  </div>
+</div>
+
+<div class="lanes">
+  <div class="lane" *ngFor="let lane of swimlaneAssignees()">
+    <div class="lane-header">{{ lane }}</div>
+
+    <div class="board">
+      <div class="column" (click)="onColumnClick('todo')" (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'todo')">
+        <div class="column-title">To Do</div>
+        <div class="column-drop" (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'todo')">
+          Drop here or click column to move
+        </div>
+        <div class="card item"
+             *ngFor="let i of itemsByStatusAndAssignee('todo', lane)"
+             draggable="true"
+             (dragstart)="onDragStart($event, i)"
+             (dragend)="onDragEnd()"
+             (dragenter)="onDragEnter($event)"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event, 'todo')"
+             (click)="onSelect(i)"
+             [class.dragging]="draggingId === i.id"
+             [class.overdue]="isOverdue(i)">
+          <div class="drag-handle" draggable="true"
+               (dragstart)="onDragStart($event, i)"
+               (dragend)="onDragEnd()"
+               (click)="onSelect(i)">drag</div>
+          <div class="item-title">{{ i.title }}</div>
+          <div class="item-desc">{{ i.description }}</div>
+          <div class="item-meta">
+            <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+            <span class="muted">{{ i.assignee || 'unassigned' }}</span>
+          </div>
+          <div class="item-tags" *ngIf="i.tags">
+            <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
+          </div>
+          <div class="item-meta">
+            <span class="muted">Due: {{ i.due_date || '—' }}</span>
+            <span class="muted">{{ i.created_at }}</span>
+          </div>
+          <div class="item-actions">
+            <button class="btn secondary" (click)="move(i, 'doing')">Move →</button>
+            <button class="btn ghost" (click)="remove(i)">Delete</button>
+          </div>
+        </div>
       </div>
-      <div class="item-tags" *ngIf="i.tags">
-        <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
+
+      <div class="column" (click)="onColumnClick('doing')" (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'doing')">
+        <div class="column-title">Doing</div>
+        <div class="column-drop" (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'doing')">
+          Drop here or click column to move
+        </div>
+        <div class="card item"
+             *ngFor="let i of itemsByStatusAndAssignee('doing', lane)"
+             draggable="true"
+             (dragstart)="onDragStart($event, i)"
+             (dragend)="onDragEnd()"
+             (dragenter)="onDragEnter($event)"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event, 'doing')"
+             (click)="onSelect(i)"
+             [class.dragging]="draggingId === i.id"
+             [class.overdue]="isOverdue(i)">
+          <div class="drag-handle" draggable="true"
+               (dragstart)="onDragStart($event, i)"
+               (dragend)="onDragEnd()"
+               (click)="onSelect(i)">drag</div>
+          <div class="item-title">{{ i.title }}</div>
+          <div class="item-desc">{{ i.description }}</div>
+          <div class="item-meta">
+            <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+            <span class="muted">{{ i.assignee || 'unassigned' }}</span>
+          </div>
+          <div class="item-tags" *ngIf="i.tags">
+            <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
+          </div>
+          <div class="item-meta">
+            <span class="muted">Due: {{ i.due_date || '—' }}</span>
+            <span class="muted">{{ i.created_at }}</span>
+          </div>
+          <div class="item-actions">
+            <button class="btn secondary" (click)="move(i, 'todo')">← Back</button>
+            <button class="btn secondary" (click)="move(i, 'done')">Move →</button>
+          </div>
+        </div>
       </div>
-      <div class="item-meta">
-        <span class="muted">Due: {{ i.due_date || '—' }}</span>
-        <span class="muted">{{ i.created_at }}</span>
-      </div>
-      <div class="item-actions">
-        <button class="btn secondary" (click)="move(i, 'doing')">← Back</button>
-        <button class="btn ghost" (click)="remove(i)">Delete</button>
+
+      <div class="column" (click)="onColumnClick('done')" (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'done')">
+        <div class="column-title">Done</div>
+        <div class="column-drop" (dragenter)="onDragEnter($event)" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'done')">
+          Drop here or click column to move
+        </div>
+        <div class="card item"
+             *ngFor="let i of itemsByStatusAndAssignee('done', lane)"
+             draggable="true"
+             (dragstart)="onDragStart($event, i)"
+             (dragend)="onDragEnd()"
+             (dragenter)="onDragEnter($event)"
+             (dragover)="onDragOver($event)"
+             (drop)="onDrop($event, 'done')"
+             (click)="onSelect(i)"
+             [class.dragging]="draggingId === i.id"
+             [class.overdue]="isOverdue(i)">
+          <div class="drag-handle" draggable="true"
+               (dragstart)="onDragStart($event, i)"
+               (dragend)="onDragEnd()"
+               (click)="onSelect(i)">drag</div>
+          <div class="item-title">{{ i.title }}</div>
+          <div class="item-desc">{{ i.description }}</div>
+          <div class="item-meta">
+            <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+            <span class="muted">{{ i.assignee || 'unassigned' }}</span>
+          </div>
+          <div class="item-tags" *ngIf="i.tags">
+            <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
+          </div>
+          <div class="item-meta">
+            <span class="muted">Due: {{ i.due_date || '—' }}</span>
+            <span class="muted">{{ i.created_at }}</span>
+          </div>
+          <div class="item-actions">
+            <button class="btn secondary" (click)="move(i, 'doing')">← Back</button>
+            <button class="btn ghost" (click)="remove(i)">Delete</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

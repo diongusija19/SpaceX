@@ -16,6 +16,7 @@ export class AdminPage {
   newEmail = '';
   newPassword = '';
   newRole: 'admin' | 'user' = 'user';
+  newTeam = 'alpha';
   resetPassword = '';
 
   constructor(private usersService: UsersService, private cdr: ChangeDetectorRef) {
@@ -39,17 +40,27 @@ export class AdminPage {
     });
   }
 
+  setTeam(user: UserRow, team: string) {
+    const prev = user.team;
+    user.team = team;
+    this.usersService.updateTeam(user.id, team).subscribe({
+      next: () => this.message = 'Team updated',
+      error: () => { user.team = prev; this.message = 'Update failed'; }
+    });
+  }
+
   createUser() {
-    if (!this.newEmail.trim() || !this.newPassword.trim()) {
-      this.message = 'Email and password required';
+    if (!this.newEmail.trim() || !this.newPassword.trim() || !this.newTeam.trim()) {
+      this.message = 'Email, password, and team required';
       return;
     }
-    this.usersService.create(this.newEmail.trim(), this.newPassword.trim(), this.newRole).subscribe({
+    this.usersService.create(this.newEmail.trim(), this.newPassword.trim(), this.newRole, this.newTeam.trim()).subscribe({
       next: () => {
         this.message = 'User created';
         this.newEmail = '';
         this.newPassword = '';
         this.newRole = 'user';
+        this.newTeam = 'alpha';
         this.load();
       },
       error: () => this.message = 'Create failed'

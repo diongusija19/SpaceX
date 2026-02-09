@@ -1,6 +1,6 @@
 <div class="card" style="margin-bottom:16px;">
   <div class="card-title">User Management</div>
-  <p class="muted">Manage roles, create users, and reset passwords.</p>
+  <p class="muted">Manage roles, teams, create users, and reset passwords.</p>
   <div *ngIf="message" class="notice">{{ message }}</div>
 </div>
 
@@ -9,6 +9,7 @@
   <form (ngSubmit)="createUser()" class="create-form">
     <input class="input" type="email" [(ngModel)]="newEmail" name="newEmail" placeholder="Email" required>
     <input class="input" type="text" [(ngModel)]="newPassword" name="newPassword" placeholder="Temp password" required>
+    <input class="input" type="text" [(ngModel)]="newTeam" name="newTeam" placeholder="Team" required>
     <select class="input" [(ngModel)]="newRole" name="newRole">
       <option value="admin">Admin</option>
       <option value="user">User</option>
@@ -23,6 +24,7 @@
     <tr>
       <th>Email</th>
       <th>Role</th>
+      <th>Team</th>
       <th>Created</th>
       <th>Reset Password</th>
     </tr>
@@ -34,6 +36,9 @@
           <option value="user">User</option>
         </select>
       </td>
+      <td>
+        <input class="input" type="text" [(ngModel)]="u.team" (change)="setTeam(u, u.team)">
+      </td>
       <td>{{ u.created_at }}</td>
       <td>
         <div class="reset">
@@ -42,6 +47,6 @@
         </div>
       </td>
     </tr>
-    <tr *ngIf="users.length === 0"><td colspan="4">No users found.</td></tr>
+    <tr *ngIf="users.length === 0"><td colspan="5">No users found.</td></tr>
   </table>
 </div>

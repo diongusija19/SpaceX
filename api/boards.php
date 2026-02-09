@@ -5,13 +5,19 @@ require_login();
 
 $allowed = ['todo','doing','done'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-  $where = '';
-  if (!is_admin()) {
-    $where = ' WHERE user_id=' . current_user_id();
-  }
+function current_team($conn) {
+  $uid = current_user_id();
+  $stmt = $conn->prepare("SELECT team FROM users WHERE id=?");
+  $stmt->bind_param("i", $uid);
+  $stmt->execute();
+  $row = $stmt->get_result()->fetch_assoc();
+  $stmt->close();
+  return $row['team'] ?? 'alpha';
+}
 
-  $result = $conn->query("SELECT id, title, description, status, priority, assignee, tags, due_date, created_at, user_id FROM board_items{$where} ORDER BY created_at DESC");
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+  $team = current_team($conn);
+  $result = $conn->query("SELECT id, title, description, status, priority, assignee, tags, due_date, created_at, user_id, team FROM board_items WHERE team='" . $conn->real_escape_string($team) . "' ORDER BY created_at DESC");
   $items = [];
   while ($row = $result->fetch_assoc()) {
     $items[] = $row;
@@ -37,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       json_response(['error' => 'Invalid request'], 400);
     }
 
-    $stmt = $conn->prepare("INSERT INTO board_items (user_id, title, description, status, priority, assignee, tags, due_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $uid = current_user_id();
-    $stmt->bind_param("isssssss", $uid, $title, $description, $status, $priority, $assignee, $tags, $due_date);
+    $team = current_team($conn);
+    $stmt = $conn->prepare("INSERT INTO board_items (user_id, team, title, description, status, priority, assignee, tags, due_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("issssssss", $uid, $team, $title, $description, $status, $priority, $assignee, $tags, $due_date);
     $stmt->execute();
     $id = $stmt->insert_id;
     $stmt->close();
@@ -55,14 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       json_response(['error' => 'Invalid request'], 400);
     }
 
-    if (!is_admin()) {
-      $stmt = $conn->prepare("UPDATE board_items SET status=? WHERE id=? AND user_id=?");
-      $uid = current_user_id();
-      $stmt->bind_param("sii", $status, $id, $uid);
-    } else {
-      $stmt = $conn->prepare("UPDATE board_items SET status=? WHERE id=?");
-      $stmt->bind_param("si", $status, $id);
-    }
+    $team = current_team($conn);
+    $stmt = $conn->prepare("UPDATE board_items SET status=? WHERE id=? AND team=?");
+    $stmt->bind_param("sis", $status, $id, $team);
     $stmt->execute();
     $stmt->close();
 
@@ -74,14 +76,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = (int)($data['id'] ?? 0);
     if ($id <= 0) json_response(['error' => 'Invalid request'], 400);
 
-    if (!is_admin()) {
-      $stmt = $conn->prepare("DELETE FROM board_items WHERE id=? AND user_id=?");
-      $uid = current_user_id();
-      $stmt->bind_param("ii", $id, $uid);
-    } else {
-      $stmt = $conn->prepare("DELETE FROM board_items WHERE id=?");
-      $stmt->bind_param("i", $id);
-    }
+    $team = current_team($conn);
+    $stmt = $conn->prepare("DELETE FROM board_items WHERE id=? AND team=?");
+    $stmt->bind_param("is", $id, $team);
     $stmt->execute();
     $stmt->close();
 

@@ -5,7 +5,7 @@ require_login();
 require_admin();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-  $result = $conn->query("SELECT id, email, role, created_at FROM users ORDER BY created_at DESC");
+  $result = $conn->query("SELECT id, email, role, team, created_at FROM users ORDER BY created_at DESC");
   $data = [];
   while ($row = $result->fetch_assoc()) {
     $data[] = $row;
@@ -21,13 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($data['email'] ?? '');
     $password = trim($data['password'] ?? '');
     $role = $data['role'] ?? 'user';
+    $team = trim($data['team'] ?? 'alpha');
 
     if ($email === '' || $password === '' || !in_array($role, ['admin','user'], true)) {
       json_response(['error' => 'Invalid request'], 400);
     }
 
-    $stmt = $conn->prepare("INSERT INTO users (email, password, role) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $email, $password, $role);
+    $stmt = $conn->prepare("INSERT INTO users (email, password, role, team) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $email, $password, $role, $team);
     if (!$stmt->execute()) {
       $stmt->close();
       json_response(['error' => 'Create failed'], 409);
@@ -44,6 +45,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $stmt = $conn->prepare("UPDATE users SET password=? WHERE id=?");
     $stmt->bind_param("si", $password, $id);
+    $stmt->execute();
+    $stmt->close();
+    json_response(['ok' => true]);
+  }
+
+  if ($action === 'set_team') {
+    $id = (int)($data['id'] ?? 0);
+    $team = trim($data['team'] ?? '');
+    if ($id <= 0 || $team === '') {
+      json_response(['error' => 'Invalid request'], 400);
+    }
+    $stmt = $conn->prepare("UPDATE users SET team=? WHERE id=?");
+    $stmt->bind_param("si", $team, $id);
     $stmt->execute();
     $stmt->close();
     json_response(['ok' => true]);

@@ -5,6 +5,7 @@ export interface UserRow {
   id: number;
   email: string;
   role: 'admin' | 'user';
+  team: string;
   created_at: string;
 }
 
@@ -20,11 +21,15 @@ export class UsersService {
     return this.http.post('/SpaceX/api/users.php', { id, role });
   }
 
-  create(email: string, password: string, role: 'admin' | 'user') {
-    return this.http.post('/SpaceX/api/users.php', { action: 'create', email, password, role });
+  create(email: string, password: string, role: 'admin' | 'user', team: string) {
+    return this.http.post('/SpaceX/api/users.php', { action: 'create', email, password, role, team });
   }
 
   resetPassword(id: number, password: string) {
     return this.http.post('/SpaceX/api/users.php', { action: 'reset', id, password });
+  }
+
+  updateTeam(id: number, team: string) {
+    return this.http.post('/SpaceX/api/users.php', { action: 'set_team', id, team });
   }
 }

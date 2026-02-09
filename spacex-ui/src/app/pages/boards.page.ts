@@ -22,6 +22,10 @@ export class BoardsPage {
   due_date: string | null = null;
   draggingId: number | null = null;
 
+  filterAssignee = 'all';
+  filterTag = 'all';
+  filterOverdue = false;
+
   constructor(
     private boards: BoardsService,
     private auth: AuthService,
@@ -75,9 +79,19 @@ export class BoardsPage {
     this.draggingId = null;
   }
 
+  onSelect(item: BoardItem) {
+    this.draggingId = item.id;
+  }
+
   onDragOver(event: DragEvent) {
     event.preventDefault();
-    event.stopPropagation();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onDragEnter(event: DragEvent) {
+    event.preventDefault();
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'move';
     }
@@ -85,7 +99,6 @@ export class BoardsPage {
 
   onDrop(event: DragEvent, status: BoardItem['status']) {
     event.preventDefault();
-    event.stopPropagation();
     const raw = event.dataTransfer?.getData('text/plain') ?? '';
     const id = Number(raw);
     if (!id) return;
@@ -94,15 +107,64 @@ export class BoardsPage {
     this.move(item, status);
   }
 
+  onColumnClick(status: BoardItem['status']) {
+    if (!this.draggingId) return;
+    const item = this.items.find(i => i.id === this.draggingId);
+    if (!item || item.status === status) return;
+    this.move(item, status);
+    this.draggingId = null;
+  }
+
   remove(item: BoardItem) {
     this.boards.delete(item.id).subscribe(() => this.load());
   }
 
   byStatus(status: BoardItem['status']) {
-    return this.items.filter(i => i.status === status);
+    return this.filtered().filter(i => i.status === status);
   }
 
   tagList(tags: string) {
     return tags.split(',').map(t => t.trim()).filter(Boolean);
+  }
+
+  uniqueAssignees() {
+    const set = new Set(this.items.map(i => (i.assignee || '').trim()).filter(Boolean));
+    return Array.from(set);
+  }
+
+  swimlaneAssignees() {
+    if (this.filterAssignee !== 'all') return [this.filterAssignee];
+    const assignees = this.uniqueAssignees();
+    const hasUnassigned = this.items.some(i => !(i.assignee || '').trim());
+    return hasUnassigned ? [...assignees, 'Unassigned'] : assignees;
+  }
+
+  uniqueTags() {
+    const set = new Set(this.items.flatMap(i => this.tagList(i.tags)));
+    return Array.from(set);
+  }
+
+  isOverdue(item: BoardItem) {
+    if (!item.due_date) return false;
+    const today = new Date();
+    const due = new Date(item.due_date + 'T00:00:00');
+    return due < today;
+  }
+
+  filtered() {
+    return this.items.filter(i => {
+      if (this.filterAssignee !== 'all' && (i.assignee || '') !== this.filterAssignee) return false;
+      if (this.filterTag !== 'all' && !this.tagList(i.tags).includes(this.filterTag)) return false;
+      if (this.filterOverdue && !this.isOverdue(i)) return false;
+      return true;
+    });
+  }
+
+  itemsByStatusAndAssignee(status: BoardItem['status'], assignee: string) {
+    return this.filtered().filter(i => {
+      const name = (i.assignee || '').trim();
+      const lane = name === '' ? 'Unassigned' : name;
+      return i.status === status && lane === assignee;
+    });
   }
 }
