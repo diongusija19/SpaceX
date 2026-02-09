@@ -1,0 +1,18 @@
+<div class="card">
+  <div class="card-title">Activity Log</div>
+  <table class="table" style="margin-top:10px;">
+    <tr>
+      <th>Action</th>
+      <th>Resource</th>
+      <th>User</th>
+      <th>Time</th>
+    </tr>
+    <tr *ngFor="let a of items">
+      <td>{{ a.action }}</td>
+      <td>{{ a.resource_name }}</td>
+      <td>{{ a.user_email }}</td>
+      <td>{{ a.timestamp }}</td>
+    </tr>
+  </table>
+  <div class="empty" *ngIf="items.length === 0">No activity yet.</div>
+</div>

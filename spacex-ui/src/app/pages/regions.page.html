@@ -1,0 +1,33 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Regions Overview</div>
+  <p class="muted">Total resources: {{ totalResources() }}</p>
+</div>
+
+<div class="grid-3">
+  <div class="card" *ngFor="let r of regions">
+    <div class="card-title">{{ r.region | uppercase }}</div>
+    <div class="stat">{{ r.total }}</div>
+    <div class="stat-sub">Running: {{ r.running }} · Stopped: {{ r.stopped }} · Provisioning: {{ r.provisioning }}</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <div class="card-title">Region Breakdown</div>
+  <table class="table" style="margin-top:10px;">
+    <tr>
+      <th>Region</th>
+      <th>Total</th>
+      <th>Running</th>
+      <th>Stopped</th>
+      <th>Provisioning</th>
+    </tr>
+    <tr *ngFor="let r of regions">
+      <td>{{ r.region }}</td>
+      <td>{{ r.total }}</td>
+      <td>{{ r.running }}</td>
+      <td>{{ r.stopped }}</td>
+      <td>{{ r.provisioning }}</td>
+    </tr>
+    <tr *ngIf="regions.length === 0"><td colspan="5">No region data.</td></tr>
+  </table>
+</div>

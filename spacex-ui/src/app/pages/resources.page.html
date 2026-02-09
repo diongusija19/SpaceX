@@ -1,0 +1,76 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Create Resource</div>
+  <form (ngSubmit)="create()" style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap:10px; margin-top:10px; align-items:end;">
+    <input class="input" type="text" [(ngModel)]="name" name="name" placeholder="Resource name" required>
+    <select class="input" [(ngModel)]="createType" name="createType">
+      <option value="vm">VM</option>
+      <option value="storage">Storage</option>
+      <option value="db">Database</option>
+    </select>
+    <select class="input" [(ngModel)]="createRegion" name="createRegion">
+      <option value="east-us">East US</option>
+      <option value="central-us">Central US</option>
+      <option value="west-eu">West EU</option>
+    </select>
+    <select class="input" [(ngModel)]="createSize" name="createSize">
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="large">Large</option>
+    </select>
+    <button class="btn" type="submit">Create</button>
+  </form>
+</div>
+
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Filters</div>
+  <div style="display:flex; gap:12px; margin-top:10px; align-items:center;">
+    <label>Type</label>
+    <select class="input" style="max-width:160px;" [(ngModel)]="type" (change)="load()">
+      <option value="all">All</option>
+      <option value="vm">VM</option>
+      <option value="storage">Storage</option>
+      <option value="db">Database</option>
+    </select>
+
+    <label>Status</label>
+    <select class="input" style="max-width:160px;" [(ngModel)]="status" (change)="load()">
+      <option value="all">All</option>
+      <option value="running">Running</option>
+      <option value="stopped">Stopped</option>
+      <option value="provisioning">Provisioning</option>
+    </select>
+
+    <label>Region</label>
+    <select class="input" style="max-width:160px;" [(ngModel)]="region" (change)="load()">
+      <option value="all">All</option>
+      <option value="east-us">East US</option>
+      <option value="central-us">Central US</option>
+      <option value="west-eu">West EU</option>
+    </select>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">All Resources</div>
+  <table class="table" style="margin-top:10px;">
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Region</th>
+      <th>Status</th>
+      <th>Size</th>
+      <th>Created</th>
+      <th>Open</th>
+    </tr>
+    <tr *ngFor="let r of resources">
+      <td>{{ r.name }}</td>
+      <td>{{ r.type }}</td>
+      <td>{{ r.region }}</td>
+      <td class="status {{ r.status }}">{{ r.status }}</td>
+      <td>{{ r.size }}</td>
+      <td>{{ r.created_at }}</td>
+      <td><a [routerLink]="['/resources', r.id]">View</a></td>
+    </tr>
+  </table>
+  <div class="empty" *ngIf="resources.length === 0">No resources match your filters.</div>
+</div>

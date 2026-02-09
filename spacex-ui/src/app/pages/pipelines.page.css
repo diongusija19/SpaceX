@@ -1,0 +1,25 @@
+.pipeline-form {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr auto;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.status-pill {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.status-pill.running { background: #e0f2fe; color: #075985; border-color: #bae6fd; }
+.status-pill.succeeded { background: #dcfce7; color: #166534; border-color: #86efac; }
+.status-pill.failed { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+.status-pill.queued { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
+
+@media (max-width: 900px) {
+  .pipeline-form {
+    grid-template-columns: 1fr;
+  }
+}

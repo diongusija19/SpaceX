@@ -1,0 +1,47 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">User Management</div>
+  <p class="muted">Manage roles, create users, and reset passwords.</p>
+  <div *ngIf="message" class="notice">{{ message }}</div>
+</div>
+
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Create User</div>
+  <form (ngSubmit)="createUser()" class="create-form">
+    <input class="input" type="email" [(ngModel)]="newEmail" name="newEmail" placeholder="Email" required>
+    <input class="input" type="text" [(ngModel)]="newPassword" name="newPassword" placeholder="Temp password" required>
+    <select class="input" [(ngModel)]="newRole" name="newRole">
+      <option value="admin">Admin</option>
+      <option value="user">User</option>
+    </select>
+    <button class="btn" type="submit">Create</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title">Users</div>
+  <table class="table" style="margin-top:10px;">
+    <tr>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Created</th>
+      <th>Reset Password</th>
+    </tr>
+    <tr *ngFor="let u of users">
+      <td>{{ u.email }}</td>
+      <td>
+        <select class="input" [(ngModel)]="u.role" (ngModelChange)="setRole(u, $event)">
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+        </select>
+      </td>
+      <td>{{ u.created_at }}</td>
+      <td>
+        <div class="reset">
+          <input class="input" type="text" [(ngModel)]="resetPassword" placeholder="New password">
+          <button class="btn secondary" type="button" (click)="reset(u)">Reset</button>
+        </div>
+      </td>
+    </tr>
+    <tr *ngIf="users.length === 0"><td colspan="4">No users found.</td></tr>
+  </table>
+</div>

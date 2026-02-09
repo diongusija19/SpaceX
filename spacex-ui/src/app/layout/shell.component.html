@@ -1,0 +1,43 @@
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">SX</div>
+      <div class="brand-text">
+        <div class="brand-title">SpaceX</div>
+        <div class="brand-subtitle">DevOps Cloud</div>
+      </div>
+    </div>
+
+    <div class="nav-section">Overview</div>
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">Dashboard</a>
+
+    <div class="nav-section">Operate</div>
+    <a routerLink="/boards" routerLinkActive="active" class="nav-item">Boards</a>
+    <a routerLink="/pipelines" routerLinkActive="active" class="nav-item">Pipelines</a>
+    <a routerLink="/resources" routerLinkActive="active" class="nav-item">Resources</a>
+    <a routerLink="/activity" routerLinkActive="active" class="nav-item">Activity</a>
+    <a routerLink="/regions" routerLinkActive="active" class="nav-item">Regions</a>
+
+    <div class="nav-section">Admin</div>
+    <a routerLink="/admin" routerLinkActive="active" class="nav-item" *ngIf="auth.current?.role === 'admin'">User Management</a>
+    <a routerLink="/login" routerLinkActive="active" class="nav-item" *ngIf="!auth.current">Login</a>
+    <a class="nav-item" (click)="logout()" *ngIf="auth.current">Logout</a>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="title">SpaceX DevOps</div>
+      <div class="top-actions">
+        <div class="search-wrap">
+          <input class="search" placeholder="Search resources" disabled>
+        </div>
+        <div class="user-pill">
+          {{ auth.current?.email || 'Guest' }}
+          <span *ngIf="auth.current?.role">• {{ auth.current?.role }}</span>
+        </div>
+      </div>
+    </div>
+
+    <router-outlet></router-outlet>
+  </main>
+</div>

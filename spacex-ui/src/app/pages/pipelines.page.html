@@ -1,0 +1,34 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Create Pipeline</div>
+  <form (ngSubmit)="create()" class="pipeline-form">
+    <input class="input" type="text" [(ngModel)]="name" name="name" placeholder="Pipeline name" required>
+    <input class="input" type="text" [(ngModel)]="repo" name="repo" placeholder="Repo (e.g. spacex/cloud)" required>
+    <input class="input" type="text" [(ngModel)]="branch" name="branch" placeholder="Branch" required>
+    <button class="btn" type="submit">Create</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title">Pipelines</div>
+  <table class="table" style="margin-top:10px;">
+    <tr>
+      <th>Name</th>
+      <th>Repo</th>
+      <th>Branch</th>
+      <th>Last Run</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    <tr *ngFor="let p of rows">
+      <td><a [routerLink]="['/pipelines', p.id]">{{ p.name }}</a></td>
+      <td>{{ p.repo }}</td>
+      <td>{{ p.default_branch }}</td>
+      <td>{{ p.last_started || '—' }}</td>
+      <td><span class="status-pill {{ p.last_status || 'queued' }}">{{ p.last_status || 'never' }}</span></td>
+      <td>
+        <button class="btn secondary" (click)="run(p)">Run</button>
+      </td>
+    </tr>
+    <tr *ngIf="rows.length === 0"><td colspan="6">No pipelines yet.</td></tr>
+  </table>
+</div>

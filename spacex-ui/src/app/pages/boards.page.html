@@ -1,0 +1,98 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Create Work Item</div>
+  <form (ngSubmit)="create()" class="board-form">
+    <input class="input" type="text" [(ngModel)]="title" name="title" placeholder="Title" required>
+    <input class="input" type="text" [(ngModel)]="description" name="description" placeholder="Short description">
+    <select class="input" [(ngModel)]="status" name="status" aria-label="Work item status">
+      <option value="todo">To Do</option>
+      <option value="doing">Doing</option>
+      <option value="done">Done</option>
+    </select>
+    <select class="input" [(ngModel)]="priority" name="priority" aria-label="Work item priority">
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+    </select>
+    <button class="btn" type="submit">Create</button>
+  </form>
+</div>
+
+<div class="board">
+  <div class="column" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'todo')">
+    <div class="column-title">To Do</div>
+    <div class="card item"
+         *ngFor="let i of byStatus('todo')"
+         draggable="true"
+         (dragstart)="onDragStart($event, i)"
+         (dragend)="onDragEnd()"
+         (dragover)="onDragOver($event)"
+         (drop)="onDrop($event, 'todo')"
+         [class.dragging]="draggingId === i.id">
+      <div class="drag-handle" draggable="true"
+           (dragstart)="onDragStart($event, i)"
+           (dragend)="onDragEnd()">drag</div>
+      <div class="item-title">{{ i.title }}</div>
+      <div class="item-desc">{{ i.description }}</div>
+      <div class="item-meta">
+        <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+        <span class="muted">{{ i.created_at }}</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn secondary" (click)="move(i, 'doing')">Move →</button>
+        <button class="btn ghost" (click)="remove(i)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="column" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'doing')">
+    <div class="column-title">Doing</div>
+    <div class="card item"
+         *ngFor="let i of byStatus('doing')"
+         draggable="true"
+         (dragstart)="onDragStart($event, i)"
+         (dragend)="onDragEnd()"
+         (dragover)="onDragOver($event)"
+         (drop)="onDrop($event, 'doing')"
+         [class.dragging]="draggingId === i.id">
+      <div class="drag-handle" draggable="true"
+           (dragstart)="onDragStart($event, i)"
+           (dragend)="onDragEnd()">drag</div>
+      <div class="item-title">{{ i.title }}</div>
+      <div class="item-desc">{{ i.description }}</div>
+      <div class="item-meta">
+        <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+        <span class="muted">{{ i.created_at }}</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn secondary" (click)="move(i, 'todo')">← Back</button>
+        <button class="btn secondary" (click)="move(i, 'done')">Move →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="column" (dragover)="onDragOver($event)" (drop)="onDrop($event, 'done')">
+    <div class="column-title">Done</div>
+    <div class="card item"
+         *ngFor="let i of byStatus('done')"
+         draggable="true"
+         (dragstart)="onDragStart($event, i)"
+         (dragend)="onDragEnd()"
+         (dragover)="onDragOver($event)"
+         (drop)="onDrop($event, 'done')"
+         [class.dragging]="draggingId === i.id">
+      <div class="drag-handle" draggable="true"
+           (dragstart)="onDragStart($event, i)"
+           (dragend)="onDragEnd()">drag</div>
+      <div class="item-title">{{ i.title }}</div>
+      <div class="item-desc">{{ i.description }}</div>
+      <div class="item-meta">
+        <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+        <span class="muted">{{ i.created_at }}</span>
+      </div>
+      <div class="item-actions">
+        <button class="btn secondary" (click)="move(i, 'doing')">← Back</button>
+        <button class="btn ghost" (click)="remove(i)">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

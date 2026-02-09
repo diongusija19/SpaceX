@@ -1,0 +1,52 @@
+<div *ngIf="detail">
+  <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+    <div class="card">
+      <div class="card-title">Status</div>
+      <div class="stat status {{ detail.resource.status }}">{{ detail.resource.status }}</div>
+      <div class="stat-sub">Created: {{ detail.resource.created_at }}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Total Hours</div>
+      <div class="stat">{{ detail.usage.hours | number:'1.2-2' }}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Total Cost</div>
+      <div class="stat">${{ detail.usage.cost | number:'1.2-2' }}</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title">Resource Info</div>
+      <table class="table" style="margin-top:10px;">
+        <tr><th>Name</th><td>{{ detail.resource.name }}</td></tr>
+        <tr><th>Type</th><td>{{ detail.resource.type }}</td></tr>
+        <tr><th>Region</th><td>{{ detail.resource.region }}</td></tr>
+        <tr><th>Size</th><td>{{ detail.resource.size }}</td></tr>
+      </table>
+
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <button class="btn" (click)="action('start')">Start</button>
+        <button class="btn secondary" (click)="action('stop')">Stop</button>
+        <button *ngIf="isAdmin" class="btn" style="background:#dc2626" (click)="action('delete')">Delete</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Alerts</div>
+      <table class="table" style="margin-top:10px;">
+        <tr>
+          <th>Severity</th>
+          <th>Message</th>
+          <th>Date</th>
+        </tr>
+        <tr *ngFor="let a of detail.alerts">
+          <td><span class="badge {{ a.severity }}">{{ a.severity }}</span></td>
+          <td>{{ a.message }}</td>
+          <td>{{ a.created_at }}</td>
+        </tr>
+        <tr *ngIf="detail.alerts.length === 0"><td colspan="3">No alerts</td></tr>
+      </table>
+    </div>
+  </div>
+</div>

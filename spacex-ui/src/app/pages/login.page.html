@@ -1,0 +1,21 @@
+<div class="login">
+  <div class="card login-card">
+    <div class="login-header">
+      <div class="login-mark">SX</div>
+      <div>
+        <div class="login-title">SpaceX DevOps</div>
+        <div class="login-subtitle">Sign in to continue</div>
+      </div>
+    </div>
+    <form (ngSubmit)="submit()" style="display:grid; gap:12px;">
+      <label>Email</label>
+      <input class="input" type="email" [(ngModel)]="email" name="email" required>
+      <label>Password</label>
+      <input class="input" type="password" [(ngModel)]="password" name="password" required>
+      <button class="btn" type="submit">Login</button>
+      <div class="error" *ngIf="error">{{ error }}</div>
+    </form>
+    <p class="muted" style="margin-top:10px;">Admin: admin@spacex.com / admin123</p>
+    <p class="muted">User: user@spacex.com / user123</p>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /SpaceX/
+
+  # Don't rewrite API calls
+  RewriteRule ^api/ - [L]
+
+  # Serve existing files/folders as-is
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Fallback to SPA entry
+  RewriteRule ^ index.html [L]
+</IfModule>

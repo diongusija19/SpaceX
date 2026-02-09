@@ -1,0 +1,8 @@
+.login { min-height: 100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; }
+.login-card { max-width: 440px; width: 100%; }
+.login-header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+.login-mark { width: 36px; height: 36px; border-radius: 6px; background: var(--topbar); color: #fff; display:flex; align-items:center; justify-content:center; font-weight: 700; }
+.login-title { font-weight: 700; }
+.login-subtitle { font-size: 12px; color: var(--muted); }
+.error { color: var(--danger); }
+.muted { color: var(--muted); }
