@@ -1,0 +1,29 @@
+<div class="card" style="margin-bottom:16px;">
+  <div class="card-title">Create Repository</div>
+  <form (ngSubmit)="create()" class="repo-form">
+    <input class="input" type="text" [(ngModel)]="name" name="name" placeholder="Repo name" required>
+    <input class="input" type="text" [(ngModel)]="branch" name="branch" placeholder="Default branch" required>
+    <button class="btn" type="submit">Create</button>
+  </form>
+</div>
+
+<div class="card">
+  <div class="card-title">Repositories</div>
+  <table class="table" style="margin-top:10px;">
+    <tr>
+      <th>Name</th>
+      <th>Default Branch</th>
+      <th>Last Commit</th>
+      <th>Author</th>
+      <th>SHA</th>
+    </tr>
+    <tr *ngFor="let r of rows">
+      <td><a [routerLink]="['/repos', r.id]">{{ r.name }}</a></td>
+      <td>{{ r.default_branch }}</td>
+      <td>{{ r.last_message || '—' }}</td>
+      <td>{{ r.last_author || '—' }}</td>
+      <td>{{ r.last_sha || '—' }}</td>
+    </tr>
+    <tr *ngIf="rows.length === 0"><td colspan="5">No repositories yet.</td></tr>
+  </table>
+</div>

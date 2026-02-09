@@ -17,6 +17,9 @@ export class BoardsPage {
   description = '';
   status: BoardItem['status'] = 'todo';
   priority: BoardItem['priority'] = 'medium';
+  assignee = '';
+  tags = '';
+  due_date: string | null = null;
   draggingId: number | null = null;
 
   constructor(
@@ -36,11 +39,22 @@ export class BoardsPage {
 
   create() {
     if (!this.title.trim()) return;
-    this.boards.create(this.title.trim(), this.description.trim(), this.status, this.priority).subscribe(() => {
+    this.boards.create(
+      this.title.trim(),
+      this.description.trim(),
+      this.status,
+      this.priority,
+      this.assignee.trim(),
+      this.tags.trim(),
+      this.due_date
+    ).subscribe(() => {
       this.title = '';
       this.description = '';
       this.status = 'todo';
       this.priority = 'medium';
+      this.assignee = '';
+      this.tags = '';
+      this.due_date = null;
       this.load();
     });
   }
@@ -86,5 +100,9 @@ export class BoardsPage {
 
   byStatus(status: BoardItem['status']) {
     return this.items.filter(i => i.status === status);
+  }
+
+  tagList(tags: string) {
+    return tags.split(',').map(t => t.trim()).filter(Boolean);
   }
 }

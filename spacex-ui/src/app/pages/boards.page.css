@@ -40,22 +40,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .item-actions {
   display: flex;
   gap: 8px;
-}
-
-.item.dragging {
-  opacity: 0.5;
-  border: 1px dashed #9ca3af;
-}
-
-.column.drag-target {
-  outline: 2px dashed #93c5fd;
-  background: #e8f2fc;
 }
 
 .btn.ghost {
@@ -78,9 +68,43 @@
 
 .board-form {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1fr auto;
+  grid-template-columns: 2fr 2fr 1fr 1fr 1.5fr 1.5fr 1fr auto;
   gap: 10px;
   margin-top: 10px;
+}
+
+.drag-handle {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.item.dragging {
+  opacity: 0.5;
+  border: 1px dashed #9ca3af;
+}
+
+.item-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.tag {
+  font-size: 11px;
+  padding: 2px 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  color: #374151;
+}
+
+@media (max-width: 1200px) {
+  .board-form {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 }
 
 @media (max-width: 900px) {

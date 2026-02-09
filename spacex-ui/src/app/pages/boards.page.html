@@ -13,6 +13,9 @@
       <option value="medium">Medium</option>
       <option value="high">High</option>
     </select>
+    <input class="input" type="text" [(ngModel)]="assignee" name="assignee" placeholder="Assignee (email)">
+    <input class="input" type="text" [(ngModel)]="tags" name="tags" placeholder="Tags (comma separated)">
+    <input class="input" type="date" [(ngModel)]="due_date" name="due_date">
     <button class="btn" type="submit">Create</button>
   </form>
 </div>
@@ -35,6 +38,13 @@
       <div class="item-desc">{{ i.description }}</div>
       <div class="item-meta">
         <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+        <span class="muted">{{ i.assignee || 'unassigned' }}</span>
+      </div>
+      <div class="item-tags" *ngIf="i.tags">
+        <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
+      </div>
+      <div class="item-meta">
+        <span class="muted">Due: {{ i.due_date || '—' }}</span>
         <span class="muted">{{ i.created_at }}</span>
       </div>
       <div class="item-actions">
@@ -61,6 +71,13 @@
       <div class="item-desc">{{ i.description }}</div>
       <div class="item-meta">
         <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+        <span class="muted">{{ i.assignee || 'unassigned' }}</span>
+      </div>
+      <div class="item-tags" *ngIf="i.tags">
+        <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
+      </div>
+      <div class="item-meta">
+        <span class="muted">Due: {{ i.due_date || '—' }}</span>
         <span class="muted">{{ i.created_at }}</span>
       </div>
       <div class="item-actions">
@@ -87,6 +104,13 @@
       <div class="item-desc">{{ i.description }}</div>
       <div class="item-meta">
         <span class="pill {{ i.priority }}">{{ i.priority }}</span>
+        <span class="muted">{{ i.assignee || 'unassigned' }}</span>
+      </div>
+      <div class="item-tags" *ngIf="i.tags">
+        <span class="tag" *ngFor="let t of tagList(i.tags)">{{ t }}</span>
+      </div>
+      <div class="item-meta">
+        <span class="muted">Due: {{ i.due_date || '—' }}</span>
         <span class="muted">{{ i.created_at }}</span>
       </div>
       <div class="item-actions">

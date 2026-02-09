@@ -1,0 +1,23 @@
+.repo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.repo-name {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.commit-form {
+  display: grid;
+  grid-template-columns: 2fr auto;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .commit-form {
+    grid-template-columns: 1fr;
+  }
+}

@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $where = ' WHERE user_id=' . current_user_id();
   }
 
-  $result = $conn->query("SELECT id, title, description, status, priority, created_at, user_id FROM board_items{$where} ORDER BY created_at DESC");
+  $result = $conn->query("SELECT id, title, description, status, priority, assignee, tags, due_date, created_at, user_id FROM board_items{$where} ORDER BY created_at DESC");
   $items = [];
   while ($row = $result->fetch_assoc()) {
     $items[] = $row;
@@ -29,14 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($data['description'] ?? '');
     $status = $data['status'] ?? 'todo';
     $priority = $data['priority'] ?? 'medium';
+    $assignee = trim($data['assignee'] ?? '');
+    $tags = trim($data['tags'] ?? '');
+    $due_date = $data['due_date'] ?? null;
 
     if ($title === '' || !in_array($status, $allowed, true)) {
       json_response(['error' => 'Invalid request'], 400);
     }
 
-    $stmt = $conn->prepare("INSERT INTO board_items (user_id, title, description, status, priority) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO board_items (user_id, title, description, status, priority, assignee, tags, due_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $uid = current_user_id();
-    $stmt->bind_param("issss", $uid, $title, $description, $status, $priority);
+    $stmt->bind_param("isssssss", $uid, $title, $description, $status, $priority, $assignee, $tags, $due_date);
     $stmt->execute();
     $id = $stmt->insert_id;
     $stmt->close();

@@ -7,6 +7,9 @@ export interface BoardItem {
   description: string;
   status: 'todo' | 'doing' | 'done';
   priority: 'low' | 'medium' | 'high';
+  assignee: string;
+  tags: string;
+  due_date: string | null;
   created_at: string;
   user_id: number;
 }
@@ -19,8 +22,25 @@ export class BoardsService {
     return this.http.get<BoardItem[]>('/SpaceX/api/boards.php');
   }
 
-  create(title: string, description: string, status: BoardItem['status'], priority: BoardItem['priority']) {
-    return this.http.post('/SpaceX/api/boards.php', { action: 'create', title, description, status, priority });
+  create(
+    title: string,
+    description: string,
+    status: BoardItem['status'],
+    priority: BoardItem['priority'],
+    assignee: string,
+    tags: string,
+    due_date: string | null
+  ) {
+    return this.http.post('/SpaceX/api/boards.php', {
+      action: 'create',
+      title,
+      description,
+      status,
+      priority,
+      assignee,
+      tags,
+      due_date
+    });
   }
 
   move(id: number, status: BoardItem['status']) {
