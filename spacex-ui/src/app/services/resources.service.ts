@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE } from './api-base';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 export interface Resource {
@@ -26,18 +27,18 @@ export class ResourcesService {
     if (filters.type) params = params.set('type', filters.type);
     if (filters.status) params = params.set('status', filters.status);
     if (filters.region) params = params.set('region', filters.region);
-    return this.http.get<Resource[]>('/SpaceX/api/resources.php', { params });
+    return this.http.get<Resource[]>(`${API_BASE}/resources.php`, { params });
   }
 
   create(payload: { name: string; type: string; region: string; size: string }) {
-    return this.http.post<{ id: number }>('/SpaceX/api/resources.php', payload);
+    return this.http.post<{ id: number }>(`${API_BASE}/resources.php`, payload);
   }
 
   get(id: number) {
-    return this.http.get<ResourceDetail>(`/SpaceX/api/resource.php?id=${id}`);
+    return this.http.get<ResourceDetail>(`${API_BASE}/resource.php?id=${id}`);
   }
 
   action(id: number, action: 'start' | 'stop' | 'delete') {
-    return this.http.post('/SpaceX/api/resource_action.php', { id, action });
+    return this.http.post(`${API_BASE}/resource_action.php`, { id, action });
   }
 }

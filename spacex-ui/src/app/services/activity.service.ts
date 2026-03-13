@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE } from './api-base';
 import { HttpClient } from '@angular/common/http';
 
 export interface ActivityItem {
@@ -14,6 +15,6 @@ export class ActivityService {
   constructor(private http: HttpClient) {}
 
   list() {
-    return this.http.get<ActivityItem[]>('/SpaceX/api/activity.php');
+    return this.http.get<ActivityItem[]>(`${API_BASE}/activity.php`);
   }
 }

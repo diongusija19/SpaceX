@@ -43,7 +43,7 @@ export class PipelinesPage {
     });
   }
 
-  run(row: PipelineRow) {
-    this.pipelines.run(row.id).subscribe(() => this.load());
+  run(row: PipelineRow, shouldFail = false) {
+    this.pipelines.run(row.id, shouldFail).subscribe(() => this.load());
   }
 }

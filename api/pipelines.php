@@ -3,6 +3,17 @@ require __DIR__ . '/db.php';
 require __DIR__ . '/util.php';
 require_login();
 
+function pipeline_accessible($conn, $id) {
+  if (is_admin()) return true;
+  $stmt = $conn->prepare("SELECT id FROM pipelines WHERE id=? AND user_id=?");
+  $uid = current_user_id();
+  $stmt->bind_param("ii", $id, $uid);
+  $stmt->execute();
+  $ok = $stmt->get_result()->fetch_assoc();
+  $stmt->close();
+  return !!$ok;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
   $where = '';
@@ -11,14 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   }
 
   if ($id > 0) {
-    if (!is_admin()) {
-      $stmt = $conn->prepare("SELECT p.id, p.name, p.repo, p.default_branch, p.created_at FROM pipelines p WHERE p.id=? AND p.user_id=?");
-      $uid = current_user_id();
-      $stmt->bind_param("ii", $id, $uid);
-    } else {
-      $stmt = $conn->prepare("SELECT p.id, p.name, p.repo, p.default_branch, p.created_at FROM pipelines p WHERE p.id=?");
-      $stmt->bind_param("i", $id);
+    if (!pipeline_accessible($conn, $id)) {
+      json_response(['error' => 'Not found'], 404);
     }
+
+    $stmt = $conn->prepare("SELECT p.id, p.name, p.repo, p.default_branch, p.created_at FROM pipelines p WHERE p.id=?");
+    $stmt->bind_param("i", $id);
     $stmt->execute();
     $pipeline = $stmt->get_result()->fetch_assoc();
     $stmt->close();
@@ -27,9 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       json_response(['error' => 'Not found'], 404);
     }
 
-    $runs = $conn->query("SELECT id, status, trigger_type, commit_sha, initiated_by, started_at, finished_at, duration_seconds FROM pipeline_runs WHERE pipeline_id={$id} ORDER BY id DESC LIMIT 20");
+    $runs = $conn->query("SELECT id, status, trigger_type, commit_sha, initiated_by, started_at, finished_at, duration_seconds, stages_json, log_output FROM pipeline_runs WHERE pipeline_id={$id} ORDER BY id DESC LIMIT 20");
     $runsArr = [];
     while ($row = $runs->fetch_assoc()) {
+      $row['stages'] = $row['stages_json'] ? json_decode($row['stages_json'], true) : [];
+      if (!is_array($row['stages'])) $row['stages'] = [];
+      unset($row['stages_json']);
+      $row['log_output'] = $row['log_output'] ?? '';
       $runsArr[] = $row;
     }
 
@@ -80,33 +93,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   if ($action === 'run') {
     $pipeline_id = (int)($data['id'] ?? 0);
+    $should_fail = !empty($data['should_fail']);
     if ($pipeline_id <= 0) json_response(['error' => 'Invalid request'], 400);
-
-    if (!is_admin()) {
-      $stmt = $conn->prepare("SELECT id FROM pipelines WHERE id=? AND user_id=?");
-      $uid = current_user_id();
-      $stmt->bind_param("ii", $pipeline_id, $uid);
-      $stmt->execute();
-      $ok = $stmt->get_result()->fetch_assoc();
-      $stmt->close();
-      if (!$ok) json_response(['error' => 'Forbidden'], 403);
-    }
+    if (!pipeline_accessible($conn, $pipeline_id)) json_response(['error' => 'Forbidden'], 403);
 
     $email = $_SESSION['user_email'] ?? 'user';
     $sha = substr(md5((string)microtime(true)), 0, 7);
 
-    $stmt = $conn->prepare("INSERT INTO pipeline_runs (pipeline_id, status, trigger_type, commit_sha, initiated_by, started_at) VALUES (?, 'running', 'manual', ?, ?, NOW())");
-    $stmt->bind_param("iss", $pipeline_id, $sha, $email);
+    $stages = [
+      ['name' => 'Build', 'status' => 'succeeded', 'duration_seconds' => 28],
+      ['name' => 'Test', 'status' => $should_fail ? 'failed' : 'succeeded', 'duration_seconds' => 31],
+      ['name' => 'Deploy', 'status' => $should_fail ? 'queued' : 'succeeded', 'duration_seconds' => $should_fail ? 0 : 24]
+    ];
+
+    $final_status = $should_fail ? 'failed' : 'succeeded';
+    $duration = 0;
+    foreach ($stages as $s) $duration += (int)$s['duration_seconds'];
+
+    $logs = [];
+    $logs[] = "[info] Starting pipeline run for #{$pipeline_id}";
+    $logs[] = "[info] Commit {$sha}";
+    $logs[] = "[build] Installing dependencies";
+    $logs[] = "[build] Build complete";
+    $logs[] = "[test] Running test suite";
+    if ($should_fail) {
+      $logs[] = "[test] ERROR: 1 test failed in auth.guard.spec.ts";
+      $logs[] = "[deploy] Skipped because tests failed";
+    } else {
+      $logs[] = "[test] All tests passed";
+      $logs[] = "[deploy] Deploying to production";
+      $logs[] = "[deploy] Deployment finished";
+    }
+    $log_text = implode("\n", $logs);
+    $stages_json = json_encode($stages);
+
+    $stmt = $conn->prepare("INSERT INTO pipeline_runs (pipeline_id, status, trigger_type, commit_sha, initiated_by, started_at, finished_at, duration_seconds, stages_json, log_output) VALUES (?, ?, 'manual', ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL ? SECOND), ?, ?, ?)");
+    $stmt->bind_param("isssiiss", $pipeline_id, $final_status, $sha, $email, $duration, $duration, $stages_json, $log_text);
     $stmt->execute();
     $run_id = $stmt->insert_id;
     $stmt->close();
 
-    $stmt = $conn->prepare("UPDATE pipeline_runs SET status='succeeded', finished_at=DATE_ADD(started_at, INTERVAL 90 SECOND), duration_seconds=90 WHERE id=?");
-    $stmt->bind_param("i", $run_id);
-    $stmt->execute();
-    $stmt->close();
-
-    create_notification($conn, current_user_id(), "Ran pipeline #{$pipeline_id}");
+    create_notification($conn, current_user_id(), "Ran pipeline #{$pipeline_id} ({$final_status})");
     json_response(['run_id' => $run_id]);
   }
 

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE } from './api-base';
 import { HttpClient } from '@angular/common/http';
 
 export interface PipelineRow {
@@ -12,6 +13,12 @@ export interface PipelineRow {
   last_finished: string | null;
 }
 
+export interface PipelineStage {
+  name: string;
+  status: 'queued' | 'running' | 'succeeded' | 'failed';
+  duration_seconds: number;
+}
+
 export interface PipelineRun {
   id: number;
   status: 'queued' | 'running' | 'succeeded' | 'failed';
@@ -21,6 +28,8 @@ export interface PipelineRun {
   started_at: string | null;
   finished_at: string | null;
   duration_seconds: number;
+  stages: PipelineStage[];
+  log_output: string;
 }
 
 export interface PipelineDetail {
@@ -39,18 +48,18 @@ export class PipelinesService {
   constructor(private http: HttpClient) {}
 
   list() {
-    return this.http.get<PipelineRow[]>('/SpaceX/api/pipelines.php');
+    return this.http.get<PipelineRow[]>(`${API_BASE}/pipelines.php`);
   }
 
   get(id: number) {
-    return this.http.get<PipelineDetail>(`/SpaceX/api/pipelines.php?id=${id}`);
+    return this.http.get<PipelineDetail>(`${API_BASE}/pipelines.php?id=${id}`);
   }
 
   create(name: string, repo: string, defaultBranch: string) {
-    return this.http.post('/SpaceX/api/pipelines.php', { action: 'create', name, repo, default_branch: defaultBranch });
+    return this.http.post(`${API_BASE}/pipelines.php`, { action: 'create', name, repo, default_branch: defaultBranch });
   }
 
-  run(id: number) {
-    return this.http.post('/SpaceX/api/pipelines.php', { action: 'run', id });
+  run(id: number, shouldFail = false) {
+    return this.http.post(`${API_BASE}/pipelines.php`, { action: 'run', id, should_fail: shouldFail });
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE } from './api-base';
 import { HttpClient } from '@angular/common/http';
 
 export interface BoardItem {
@@ -19,7 +20,7 @@ export class BoardsService {
   constructor(private http: HttpClient) {}
 
   list() {
-    return this.http.get<BoardItem[]>('/SpaceX/api/boards.php');
+    return this.http.get<BoardItem[]>(`${API_BASE}/boards.php`);
   }
 
   create(
@@ -31,7 +32,7 @@ export class BoardsService {
     tags: string,
     due_date: string | null
   ) {
-    return this.http.post('/SpaceX/api/boards.php', {
+    return this.http.post(`${API_BASE}/boards.php`, {
       action: 'create',
       title,
       description,
@@ -44,10 +45,10 @@ export class BoardsService {
   }
 
   move(id: number, status: BoardItem['status']) {
-    return this.http.post('/SpaceX/api/boards.php', { action: 'move', id, status });
+    return this.http.post(`${API_BASE}/boards.php`, { action: 'move', id, status });
   }
 
   delete(id: number) {
-    return this.http.post('/SpaceX/api/boards.php', { action: 'delete', id });
+    return this.http.post(`${API_BASE}/boards.php`, { action: 'delete', id });
   }
 }

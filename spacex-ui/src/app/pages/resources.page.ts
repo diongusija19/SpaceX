@@ -9,7 +9,8 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-resources',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './resources.page.html'
+  templateUrl: './resources.page.html',
+  styleUrls: ['./resources.page.css']
 })
 export class ResourcesPage {
   resources: Resource[] = [];

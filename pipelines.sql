@@ -22,7 +22,15 @@ CREATE TABLE IF NOT EXISTS pipeline_runs (
   started_at TIMESTAMP NULL DEFAULT NULL,
   finished_at TIMESTAMP NULL DEFAULT NULL,
   duration_seconds INT NOT NULL DEFAULT 0,
+  stages_json TEXT NULL,
+  log_output MEDIUMTEXT NULL,
   FOREIGN KEY (pipeline_id) REFERENCES pipelines(id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+ALTER TABLE pipeline_runs
+  ADD COLUMN IF NOT EXISTS stages_json TEXT NULL AFTER duration_seconds;
+
+ALTER TABLE pipeline_runs
+  ADD COLUMN IF NOT EXISTS log_output MEDIUMTEXT NULL AFTER stages_json;

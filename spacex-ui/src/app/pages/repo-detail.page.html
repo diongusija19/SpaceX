@@ -1,4 +1,7 @@
 <div *ngIf="detail">
+  <div *ngIf="notice" class="notice">{{ notice }}</div>
+  <div *ngIf="error" class="notice error">{{ error }}</div>
+
   <div class="card" style="margin-bottom:16px;">
     <div class="card-title">Repository</div>
     <div class="repo-head">
@@ -9,30 +12,94 @@
     </div>
   </div>
 
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-title">Branches</div>
+      <form (ngSubmit)="createBranch()" class="compact-form" style="margin-bottom:10px;">
+        <input class="input" type="text" [(ngModel)]="branchName" name="branchName" placeholder="New branch name" required>
+        <button class="btn" type="submit">Create Branch</button>
+      </form>
+      <table class="table">
+        <tr>
+          <th>Name</th>
+          <th>Created By</th>
+          <th>Date</th>
+        </tr>
+        <tr *ngFor="let b of detail.branches">
+          <td><code>{{ b.name }}</code></td>
+          <td>{{ b.created_by }}</td>
+          <td>{{ b.created_at }}</td>
+        </tr>
+        <tr *ngIf="detail.branches.length === 0"><td colspan="3">No branches yet.</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Create Commit (Simulated)</div>
+      <form (ngSubmit)="commit()" class="commit-form">
+        <select class="input" [(ngModel)]="commitBranch" name="commitBranch" aria-label="Commit branch">
+          <option *ngFor="let b of detail.branches" [value]="b.name">{{ b.name }}</option>
+        </select>
+        <input class="input" type="text" [(ngModel)]="commitMessage" name="commitMessage" placeholder="Commit message" required>
+        <button class="btn" type="submit">Commit</button>
+      </form>
+    </div>
+  </div>
+
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-title">Create Commit (Simulated)</div>
-    <form (ngSubmit)="commit()" class="commit-form">
-      <input class="input" type="text" [(ngModel)]="message" name="message" placeholder="Commit message" required>
-      <button class="btn" type="submit">Commit</button>
+    <div class="card-title">Pull Requests</div>
+    <form (ngSubmit)="createPr()" class="pr-form" style="margin-bottom:10px;">
+      <select class="input" [(ngModel)]="prSource" name="prSource" aria-label="PR source branch" required>
+        <option value="" disabled>Select source</option>
+        <option *ngFor="let b of detail.branches" [value]="b.name">{{ b.name }}</option>
+      </select>
+      <select class="input" [(ngModel)]="prTarget" name="prTarget" aria-label="PR target branch" required>
+        <option *ngFor="let b of detail.branches" [value]="b.name">{{ b.name }}</option>
+      </select>
+      <input class="input" type="text" [(ngModel)]="prTitle" name="prTitle" placeholder="PR title" required>
+      <button class="btn" type="submit">Open PR</button>
     </form>
+
+    <table class="table">
+      <tr>
+        <th>Title</th>
+        <th>Branches</th>
+        <th>Status</th>
+        <th>Author</th>
+        <th>Action</th>
+      </tr>
+      <tr *ngFor="let pr of detail.pull_requests">
+        <td>{{ pr.title }}</td>
+        <td><code>{{ pr.source_branch }}</code> -> <code>{{ pr.target_branch }}</code></td>
+        <td>{{ pr.status }}</td>
+        <td>{{ pr.created_by }}</td>
+        <td>
+          <button class="btn secondary" type="button" (click)="setPrStatus(pr, 'merged')" [disabled]="pr.status !== 'open'">Merge</button>
+          <button class="btn ghost" type="button" (click)="setPrStatus(pr, 'closed')" [disabled]="pr.status !== 'open'">Close</button>
+        </td>
+      </tr>
+      <tr *ngIf="detail.pull_requests.length === 0"><td colspan="5">No pull requests yet.</td></tr>
+    </table>
   </div>
 
   <div class="card">
     <div class="card-title">Commit History</div>
     <table class="table" style="margin-top:10px;">
       <tr>
+        <th>Branch</th>
         <th>Message</th>
         <th>Author</th>
         <th>SHA</th>
         <th>Date</th>
       </tr>
       <tr *ngFor="let c of detail.commits">
+        <td><code>{{ c.branch_name }}</code></td>
         <td>{{ c.message }}</td>
         <td>{{ c.author }}</td>
         <td>{{ c.sha }}</td>
         <td>{{ c.created_at }}</td>
       </tr>
-      <tr *ngIf="detail.commits.length === 0"><td colspan="4">No commits yet.</td></tr>
+      <tr *ngIf="detail.commits.length === 0"><td colspan="5">No commits yet.</td></tr>
     </table>
   </div>
 </div>

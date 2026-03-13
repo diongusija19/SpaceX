@@ -16,6 +16,8 @@ declare const Chart: any;
 export class DashboardPage implements AfterViewInit {
   summary: Summary | null = null;
   recent: Resource[] = [];
+  private typeChart: any;
+  private statusChart: any;
 
   constructor(
     private summaryService: SummaryService,
@@ -44,7 +46,8 @@ export class DashboardPage implements AfterViewInit {
 
     const typeCtx = document.getElementById('typeChart') as HTMLCanvasElement | null;
     if (typeCtx) {
-      new Chart(typeCtx, {
+      this.typeChart?.destroy();
+      this.typeChart = new Chart(typeCtx, {
         type: 'doughnut',
         data: {
           labels: ['VM', 'Storage', 'Database'],
@@ -53,13 +56,19 @@ export class DashboardPage implements AfterViewInit {
             backgroundColor: ['#2563EB', '#10B981', '#F59E0B']
           }]
         },
-        options: { plugins: { legend: { position: 'bottom' } }, cutout: '60%' }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } },
+          cutout: '60%'
+        }
       });
     }
 
     const statusCtx = document.getElementById('statusChart') as HTMLCanvasElement | null;
     if (statusCtx) {
-      new Chart(statusCtx, {
+      this.statusChart?.destroy();
+      this.statusChart = new Chart(statusCtx, {
         type: 'bar',
         data: {
           labels: ['Running', 'Stopped', 'Provisioning'],
@@ -68,7 +77,12 @@ export class DashboardPage implements AfterViewInit {
             backgroundColor: ['#16A34A', '#DC2626', '#F59E0B']
           }]
         },
-        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
       });
     }
   }

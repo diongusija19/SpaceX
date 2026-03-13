@@ -11,13 +11,34 @@
 
 .commit-form {
   display: grid;
-  grid-template-columns: 2fr auto;
+  grid-template-columns: 1fr 2fr auto;
   gap: 10px;
   margin-top: 10px;
 }
 
+.compact-form {
+  display: grid;
+  grid-template-columns: 2fr auto;
+  gap: 10px;
+}
+
+.pr-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr auto;
+  gap: 10px;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  margin-left: 8px;
+}
+
 @media (max-width: 900px) {
-  .commit-form {
+  .commit-form,
+  .compact-form,
+  .pr-form {
     grid-template-columns: 1fr;
   }
 }

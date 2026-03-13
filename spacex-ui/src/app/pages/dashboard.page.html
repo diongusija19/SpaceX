@@ -21,20 +21,24 @@
   </div>
 </div>
 
-<div class="grid-2" style="margin-bottom:20px;" *ngIf="summary">
+<div class="grid-2 dashboard-charts" *ngIf="summary">
   <div class="card">
     <div class="card-title">Resources by Type</div>
-    <canvas id="typeChart" height="180" style="margin-top:10px;"></canvas>
+    <div class="chart-shell">
+      <canvas id="typeChart" class="chart-canvas"></canvas>
+    </div>
   </div>
   <div class="card">
     <div class="card-title">Resources by Status</div>
-    <canvas id="statusChart" height="180" style="margin-top:10px;"></canvas>
+    <div class="chart-shell">
+      <canvas id="statusChart" class="chart-canvas"></canvas>
+    </div>
   </div>
 </div>
 
 <div class="card">
   <div class="card-title">Recent Resources</div>
-  <table class="table" style="margin-top:10px;">
+  <table class="table mt-10">
     <tr>
       <th>Name</th>
       <th>Type</th>

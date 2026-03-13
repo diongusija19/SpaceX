@@ -1,7 +1,7 @@
 <div *ngIf="detail">
   <div *ngIf="message" class="notice">{{ message }}</div>
   <div *ngIf="error" class="notice error">{{ error }}</div>
-  <div class="grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+  <div class="resource-stats-grid">
     <div class="card">
       <div class="card-title">Status</div>
       <div class="stat status {{ detail.resource.status }}">{{ detail.resource.status }}</div>
@@ -17,26 +17,26 @@
     </div>
   </div>
 
-  <div class="grid-2" style="margin-top:16px;">
+  <div class="grid-2 mt-16">
     <div class="card">
       <div class="card-title">Resource Info</div>
-      <table class="table" style="margin-top:10px;">
+      <table class="table mt-10">
         <tr><th>Name</th><td>{{ detail.resource.name }}</td></tr>
         <tr><th>Type</th><td>{{ detail.resource.type }}</td></tr>
         <tr><th>Region</th><td>{{ detail.resource.region }}</td></tr>
         <tr><th>Size</th><td>{{ detail.resource.size }}</td></tr>
       </table>
 
-      <div style="display:flex; gap:10px; margin-top:12px;">
+      <div class="resource-actions">
         <button class="btn" (click)="action('start')">Start</button>
         <button class="btn secondary" (click)="action('stop')">Stop</button>
-        <button *ngIf="isAdmin" class="btn" style="background:#dc2626" (click)="action('delete')">Delete</button>
+        <button *ngIf="isAdmin" class="btn btn-delete" (click)="action('delete')">Delete</button>
       </div>
     </div>
 
     <div class="card">
       <div class="card-title">Alerts</div>
-      <table class="table" style="margin-top:10px;">
+      <table class="table mt-10">
         <tr>
           <th>Severity</th>
           <th>Message</th>

@@ -8,7 +8,8 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-resource-detail',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './resource-detail.page.html'
+  templateUrl: './resource-detail.page.html',
+  styleUrls: ['./resource-detail.page.css']
 })
 export class ResourceDetailPage {
   detail: ResourceDetail | null = null;

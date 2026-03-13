@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE } from './api-base';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -22,7 +23,7 @@ export class AuthService {
 
   ensure(): Observable<boolean> {
     if (this.loaded) return of(!!this.user$.value);
-    return this.http.get<any>('/SpaceX/api/me.php').pipe(
+    return this.http.get<any>(`${API_BASE}/me.php`).pipe(
       map(res => res && res.id ? (res as User) : null),
       tap(user => { this.user$.next(user); this.loaded = true; }),
       map(user => !!user),
@@ -31,13 +32,13 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<User>('/SpaceX/api/login.php', { email, password }).pipe(
+    return this.http.post<User>(`${API_BASE}/login.php`, { email, password }).pipe(
       tap(user => { this.user$.next(user); this.loaded = true; })
     );
   }
 
   logout() {
-    return this.http.post('/SpaceX/api/logout.php', {}).pipe(
+    return this.http.post(`${API_BASE}/logout.php`, {}).pipe(
       tap(() => { this.user$.next(null); this.loaded = false; })
     );
   }

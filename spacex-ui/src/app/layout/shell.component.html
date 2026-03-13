@@ -1,28 +1,44 @@
 <div class="app">
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-mark">SX</div>
-      <div class="brand-text">
-        <div class="brand-title">SpaceX</div>
-        <div class="brand-subtitle">DevOps Cloud</div>
+  <aside class="sidebar" [class.mobile-open]="mobileNavOpen">
+    <div class="sidebar-head">
+      <div class="brand">
+        <div class="brand-mark">SX</div>
+        <div class="brand-text">
+          <div class="brand-title">SpaceX</div>
+          <div class="brand-subtitle">DevOps Cloud</div>
+        </div>
       </div>
+      <button
+        type="button"
+        class="menu-toggle"
+        [class.open]="mobileNavOpen"
+        (click)="toggleMobileNav()"
+        [attr.aria-expanded]="mobileNavOpen"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="menu-toggle-bar"></span>
+        <span class="menu-toggle-bar"></span>
+        <span class="menu-toggle-bar"></span>
+      </button>
     </div>
 
-    <div class="nav-section">Overview</div>
-    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">Dashboard</a>
+    <div class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()">Dashboard</a>
 
-    <div class="nav-section">Operate</div>
-    <a routerLink="/boards" routerLinkActive="active" class="nav-item">Boards</a>
-    <a routerLink="/pipelines" routerLinkActive="active" class="nav-item">Pipelines</a>
-    <a routerLink="/repos" routerLinkActive="active" class="nav-item">Repos</a>
-    <a routerLink="/resources" routerLinkActive="active" class="nav-item">Resources</a>
-    <a routerLink="/activity" routerLinkActive="active" class="nav-item">Activity</a>
-    <a routerLink="/regions" routerLinkActive="active" class="nav-item">Regions</a>
+      <div class="nav-section">Operate</div>
+      <a routerLink="/boards" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()">Boards</a>
+      <a routerLink="/pipelines" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()">Pipelines</a>
+      <a routerLink="/repos" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()">Repos</a>
+      <a routerLink="/resources" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()">Resources</a>
+      <a routerLink="/activity" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()">Activity</a>
+      <a routerLink="/regions" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()">Regions</a>
 
-    <div class="nav-section">Admin</div>
-    <a routerLink="/admin" routerLinkActive="active" class="nav-item" *ngIf="auth.current?.role === 'admin'">User Management</a>
-    <a routerLink="/login" routerLinkActive="active" class="nav-item" *ngIf="!auth.current">Login</a>
-    <a class="nav-item" (click)="logout()" *ngIf="auth.current">Logout</a>
+      <div class="nav-section">Admin</div>
+      <a routerLink="/admin" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()" *ngIf="auth.current?.role === 'admin'">User Management</a>
+      <a routerLink="/login" routerLinkActive="active" class="nav-item" (click)="closeMobileNav()" *ngIf="!auth.current">Login</a>
+      <a class="nav-item" (click)="logout()" *ngIf="auth.current">Logout</a>
+    </div>
   </aside>
 
   <main class="main">

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE } from './api-base';
 import { HttpClient } from '@angular/common/http';
 
 export interface Summary {
@@ -15,6 +16,6 @@ export class SummaryService {
   constructor(private http: HttpClient) {}
 
   get() {
-    return this.http.get<Summary>('/SpaceX/api/summary.php');
+    return this.http.get<Summary>(`${API_BASE}/summary.php`);
   }
 }

@@ -1,6 +1,6 @@
-<div class="card" style="margin-bottom:16px;">
+<div class="card mb-16">
   <div class="card-title">Create Resource</div>
-  <form (ngSubmit)="create()" style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap:10px; margin-top:10px; align-items:end;">
+  <form (ngSubmit)="create()" class="resources-create-form">
     <input class="input" type="text" [(ngModel)]="name" name="name" placeholder="Resource name" required>
     <select class="input" [(ngModel)]="createType" name="createType">
       <option value="vm">VM</option>
@@ -21,11 +21,11 @@
   </form>
 </div>
 
-<div class="card" style="margin-bottom:16px;">
+<div class="card mb-16">
   <div class="card-title">Filters</div>
-  <div style="display:flex; gap:12px; margin-top:10px; align-items:center;">
+  <div class="resources-filters">
     <label>Type</label>
-    <select class="input" style="max-width:160px;" [(ngModel)]="type" (change)="load()">
+    <select class="input filter-select" [(ngModel)]="type" (change)="load()">
       <option value="all">All</option>
       <option value="vm">VM</option>
       <option value="storage">Storage</option>
@@ -33,7 +33,7 @@
     </select>
 
     <label>Status</label>
-    <select class="input" style="max-width:160px;" [(ngModel)]="status" (change)="load()">
+    <select class="input filter-select" [(ngModel)]="status" (change)="load()">
       <option value="all">All</option>
       <option value="running">Running</option>
       <option value="stopped">Stopped</option>
@@ -41,7 +41,7 @@
     </select>
 
     <label>Region</label>
-    <select class="input" style="max-width:160px;" [(ngModel)]="region" (change)="load()">
+    <select class="input filter-select" [(ngModel)]="region" (change)="load()">
       <option value="all">All</option>
       <option value="east-us">East US</option>
       <option value="central-us">Central US</option>
@@ -52,7 +52,7 @@
 
 <div class="card">
   <div class="card-title">All Resources</div>
-  <table class="table" style="margin-top:10px;">
+  <table class="table mt-10">
     <tr>
       <th>Name</th>
       <th>Type</th>

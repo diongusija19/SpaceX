@@ -18,6 +18,13 @@
 .status-pill.failed { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
 .status-pill.queued { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
 
+.btn.ghost {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  margin-left: 8px;
+}
+
 @media (max-width: 900px) {
   .pipeline-form {
     grid-template-columns: 1fr;

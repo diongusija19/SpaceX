@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS repos (
 CREATE TABLE IF NOT EXISTS repo_commits (
   id INT AUTO_INCREMENT PRIMARY KEY,
   repo_id INT NOT NULL,
+  branch_name VARCHAR(60) NOT NULL DEFAULT 'main',
   message VARCHAR(255) NOT NULL,
   author VARCHAR(120) NOT NULL,
   sha VARCHAR(12) NOT NULL,
@@ -22,3 +23,32 @@ CREATE TABLE IF NOT EXISTS repo_commits (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS repo_branches (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  repo_id INT NOT NULL,
+  name VARCHAR(60) NOT NULL,
+  created_by VARCHAR(120) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_repo_branch (repo_id, name),
+  FOREIGN KEY (repo_id) REFERENCES repos(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS pull_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  repo_id INT NOT NULL,
+  source_branch VARCHAR(60) NOT NULL,
+  target_branch VARCHAR(60) NOT NULL,
+  title VARCHAR(180) NOT NULL,
+  status ENUM('open','merged','closed') NOT NULL DEFAULT 'open',
+  created_by VARCHAR(120) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (repo_id) REFERENCES repos(id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+ALTER TABLE repo_commits
+  ADD COLUMN IF NOT EXISTS branch_name VARCHAR(60) NOT NULL DEFAULT 'main' AFTER repo_id;

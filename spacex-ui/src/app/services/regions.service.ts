@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { API_BASE } from './api-base';
 import { HttpClient } from '@angular/common/http';
 
 export interface RegionSummary {
@@ -14,6 +15,6 @@ export class RegionsService {
   constructor(private http: HttpClient) {}
 
   list() {
-    return this.http.get<RegionSummary[]>('/SpaceX/api/regions.php');
+    return this.http.get<RegionSummary[]>(`${API_BASE}/regions.php`);
   }
 }

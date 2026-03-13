@@ -26,7 +26,8 @@
       <td>{{ p.last_started || '—' }}</td>
       <td><span class="status-pill {{ p.last_status || 'queued' }}">{{ p.last_status || 'never' }}</span></td>
       <td>
-        <button class="btn secondary" (click)="run(p)">Run</button>
+        <button class="btn secondary" (click)="run(p, false)">Run</button>
+        <button class="btn ghost" (click)="run(p, true)">Run (Fail)</button>
       </td>
     </tr>
     <tr *ngIf="rows.length === 0"><td colspan="6">No pipelines yet.</td></tr>

@@ -1,0 +1,25 @@
+.dashboard-charts {
+  margin-bottom: 20px;
+}
+
+.chart-shell {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 280px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.chart-canvas {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  height: 100% !important;
+}
+
+@media (max-width: 560px) {
+  .chart-shell {
+    height: 220px;
+  }
+}

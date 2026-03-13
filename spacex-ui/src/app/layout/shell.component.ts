@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
 import { NotificationsService, NotificationItem } from '../services/notifications.service';
@@ -14,8 +14,13 @@ import { NotificationsService, NotificationItem } from '../services/notification
 export class ShellLayout {
   notifications: NotificationItem[] = [];
   unread = 0;
+  mobileNavOpen = false;
 
-  constructor(public auth: AuthService, private notificationsService: NotificationsService) {
+  constructor(
+    public auth: AuthService,
+    private notificationsService: NotificationsService,
+    private router: Router
+  ) {
     this.refreshNotifications();
   }
 
@@ -27,7 +32,16 @@ export class ShellLayout {
     });
   }
 
+  toggleMobileNav() {
+    this.mobileNavOpen = !this.mobileNavOpen;
+  }
+
+  closeMobileNav() {
+    this.mobileNavOpen = false;
+  }
+
   logout() {
-    this.auth.logout().subscribe(() => window.location.href = '/SpaceX/login');
+    this.closeMobileNav();
+    this.auth.logout().subscribe(() => this.router.navigateByUrl('/login'));
   }
 }

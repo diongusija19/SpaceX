@@ -1,0 +1,35 @@
+SpaceX DevOps Cloud - 30 Second LinkedIn Video Script
+
+Length: 30 sec
+Format: 1920x1080 horizontal
+Style: clean, sleek, monochrome-blue tech look
+
+Scene 1 (0s-4s)
+- Visual: Logo + title fade in
+- Text: "SpaceX DevOps Cloud"
+- Subtitle: "triOS College Capstone Project"
+
+Scene 2 (4s-10s)
+- Visual: Login screen and quick transition to dashboard
+- Text: "Secure login + role-based access"
+
+Scene 3 (10s-16s)
+- Visual: Dashboard charts and metrics cards
+- Text: "Track resources, status, and monthly cost"
+
+Scene 4 (16s-22s)
+- Visual: Resources page and actions (start/stop/delete)
+- Text: "Manage VM, Database, and Storage services"
+
+Scene 5 (22s-27s)
+- Visual: Boards and Pipelines pages
+- Text: "DevOps workflow module in progress"
+
+Scene 6 (27s-30s)
+- Visual: Closing card
+- Text: "Still building and improving"
+- Text: "Feedback welcome"
+- Hashtags: #triOSCollege #Capstone #DevOps #CloudComputing
+
+Voiceover (optional):
+"This is SpaceX DevOps Cloud, my triOS College capstone project. I built it with Angular, PHP, and MySQL to simulate cloud resource management and DevOps workflows. The platform is still in progress, and I am actively improving it each sprint."
