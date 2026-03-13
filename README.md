@@ -1,75 +1,90 @@
-# SpaceX — Cloud Resource Management Web App Prototype
+# SpaceX DevOps Cloud
 
-SpaceX is a web-based cloud management dashboard prototype inspired by platforms like Microsoft Azure. The app simulates the creation, management, and monitoring of cloud resources through a structured portal UI. It does not provide real cloud infrastructure; instead, it demonstrates how cloud services can be organized, controlled, and visualized in an enterprise-style web app.
+SpaceX DevOps Cloud is an Azure-inspired capstone project built for triOS College. It simulates a cloud management and DevOps platform where users can manage virtual resources, view dashboards, and interact with workflow modules such as boards, pipelines, and repos.
 
-## Project Goal
-Build a working web app prototype that allows users to manage simulated cloud resources (e.g., Virtual Machines, Databases, Storage) using a PHP + SQL backend, then implement the UI and features using Angular (with an optional React version later).
+The project is still in active development. It is designed as a working prototype that demonstrates full-stack development with Angular, PHP, and MySQL.
 
-## Core Features (MVP)
-- User authentication (login/logout)
-- Dashboard overview of resources
-- Create simulated cloud resources:
-  - Virtual Machines
-  - Databases
-  - Storage services
-- Resource list view with filters and status indicators
-- Resource detail pages (configuration + status)
-- Simulated actions: start / stop / delete resources
-- Region-based organization
-- Activity log of recent actions
-- Responsive dashboard UI
+## Features
 
-## Tech Stack (Planned)
-- Backend: PHP + SQL (MySQL)
-- Frontend: Angular (later optional React version)
-- Version Control: Git + GitHub
-- Design: Adobe XD
-- Environment: XAMPP (or MAMP) + Node.js + Angular CLI
+- User authentication with admin and user roles
+- Dashboard with resource metrics and charts
+- Simulated cloud resources: VM, Database, Storage
+- Resource creation, filtering, status tracking, and detail pages
+- Resource actions: start, stop, delete
+- Activity log and region views
+- Boards module with task management flow
+- Pipelines and repos modules for simulated DevOps workflows
+- Responsive UI for desktop and mobile
 
-## Milestones
-1. **Backend foundation (PHP/SQL)**: Auth + database schema + API endpoints
-2. **Angular UI**: Dashboard + resource CRUD views
-3. **Polish & growth feature**: filters, logs, charts, responsive improvements
-4. **Final demo & code review**: walkthrough + documentation
+## Tech Stack
 
-## How to Run (Will be updated)
-### Prerequisites
-- XAMPP (Apache + MySQL)
-- Node.js (LTS) + npm
+- Frontend: Angular
+- Backend: PHP
+- Database: MySQL
+- Local environment: XAMPP
+- Version control: GitHub
 
-### 1) Database Setup (phpMyAdmin)
-1. Open phpMyAdmin and create the database:
-   - `spacex_cloud`
-2. Run these SQL files (in order):
-   - `seed.sql` (users + sample data)
-   - `boards.sql` (boards table)
-   - `pipelines.sql` (pipelines tables)
+## Project Structure
 
-### 2) Backend (PHP API)
-1. Copy the `api/` folder into:
-   - `/Applications/XAMPP/xamppfiles/htdocs/SpaceX/api/`
-2. Copy `.htaccess` into:
-   - `/Applications/XAMPP/xamppfiles/htdocs/SpaceX/.htaccess`
-3. Ensure Apache is running in XAMPP.
+- `spacex-ui/` - Angular frontend
+- `api/` - PHP backend endpoints
+- `seed.sql`, `boards.sql`, `notifications.sql`, `pipelines.sql`, `repos.sql`, `teams.sql` - database scripts
+- `.htaccess` - SPA routing support for Apache
+- `DEPLOY.md` - deployment notes
 
-### 3) Frontend (Angular)
-1. Install dependencies:
-   - `cd spacex-ui`
-   - `npm install`
-2. Build the app:
-   - `npm run build`
-3. Copy the build output:
-   - `cp -R /Applications/XAMPP/xamppfiles/htdocs/SpaceX/www/browser/. /Applications/XAMPP/xamppfiles/htdocs/SpaceX/`
-4. Open:
-   - `http://localhost/SpaceX/`
+## Local Setup
 
-### Demo Credentials
+### 1. Database
+
+Create a MySQL database named `spacex_cloud`, then import these files in order:
+
+1. `seed.sql`
+2. `boards.sql`
+3. `notifications.sql`
+4. `pipelines.sql`
+5. `repos.sql`
+6. `teams.sql`
+
+### 2. Frontend
+
+```bash
+cd spacex-ui
+npm install
+npm run build -- --base-href /SpaceX/
+```
+
+### 3. XAMPP
+
+Place the project under your XAMPP web root so the app runs at:
+
+`http://localhost/SpaceX/`
+
+Make sure:
+
+- Apache is running
+- MySQL is running
+- the `api/` folder is available under the project root
+- the Angular build output is copied into the live `SpaceX` folder
+
+## Demo Accounts
+
 - Admin: `admin@spacex.com` / `admin123`
 - User: `user@spacex.com` / `user123`
 
-### Notes
-- The app is a SPA; routing is handled by `.htaccess`.
-- If you see old assets, hard refresh: `Cmd+Shift+R`.
+## Status
+
+Current state:
+
+- functional prototype
+- presentation-ready
+- still being refined and expanded
+
+Planned improvements:
+
+- stronger production security
+- deeper pipeline/repo workflows
+- public deployment with domain hosting
 
 ## Author
+
 Joni
